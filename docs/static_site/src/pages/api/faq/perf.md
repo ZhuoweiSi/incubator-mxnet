@@ -64,10 +64,76 @@ Note that _MXNet_ treats all CPUs on a single machine as a single device.
 So whether you specify `cpu(0)` or `cpu()`, _MXNet_ will use all CPU cores on the machine.
 
 ### Scoring results
-The following table shows performance of MXNet-1.2.0.rc1,
+The following table shows performance of MXNet-1.5.0,
 namely number of images that can be predicted per second.
 We used [example/image-classification/benchmark_score.py](https://github.com/dmlc/mxnet/blob/master/example/image-classification/benchmark_score.py)
 to measure the performance on different AWS EC2 machines.
+
+
+
+1. Performance results are based on testing as of 24th July 2019 by AWS and may not reflect all publicly available security updates. No product or component can be absolutely secure. Test Configuration: Reproduce Script: https://github.com/intel/optimized-models/tree/master/mxnet/blog/mxnet_v1.5_release Software: Apache MXNet 1.5.0 and benchmark script commit id ad4b7570b04ec13df739bd336f282bdaca690df7 Hardware: AWS EC2 C5.24xlarge Custom 2nd generation Intel Xeon Scalable Processors (Cascade Lake) with a sustained all core Turbo frequency of 3.6GHz and single core turbo frequency of up to 3.9GHz.
+2. Table 2 lists the detailed inference throughput and latency data and comparison corresponding to figure 1 and 2, the numbers are relative gains compared to the “mxnet FP32” column, which set as the baseline. Synthetic data is used as the dataset.
+3. Table 3 lists the detailed inference throughput and latency data and comparison corresponding to figure 3 and 4, the numbers are relative gains compared to the “MXNet 1.5” column, which set as the baseline. Synthetic data is used as the dataset.
+AWS EC2 C5.18xlarge:
+
+Table 2: Detailed Performance data on Topologies for Image Classification (Measured on C5.24xlarge, Synthetic Dataset)
+
+|BATCH SIZE	 | RESNET-18 |  |     |  RESNET-50      ||      |
+|------|--------|--------|--------|--------|--------|-------|
+|      | MXNET FP32 | SPEED-UP MXNET-MKL FP32 V.S. MXNET |	SPEED-UP MXNET-MKL INT8 V.S. MXNET	| MXNET FP32 |	SPEED-UP MXNET-MKL FP32 V.S. MXNET |    SPEED-UP MXNET-MKL INT8 V.S. MXNET |
+| 1	 | 1.00	 | 11.75	 | 26.86	 | 1.00	 | 9.32	 | 26.50 | 
+| 2	 | 1.00	 | 15.20	 | 43.60	 | 1.00	 | 11.87	 | 38.91 | 
+| 4	 | 1.00	 | 19.67	 | 61.10	 | 1.00	 | 16.07	 | 52.83 | 
+| 8	 | 1.00	 | 23.00	 | 76.63	 | 1.00	 | 18.83	 | 65.03 | 
+| 16	 | 1.00	 | 24.80	 | 86.81	 | 1.00	 | 19.92	 | 73.87 | 
+| 32	 | 1.00	 | 25.68	 | 91.61	 | 1.00	 | 19.92	 | 81.63 | 
+| 64	 | 1.00	 | 26.13	 | 95.77	 | 1.00	 | 20.67	 | 82.01 | 
+
+| BATCH SIZE | MOBILENET V1 |                                    |                                    | MOBILENET V2 |                                    |                                    |
+| ---------- | ------------ | ---------------------------------- | ---------------------------------- | ------------ | ---------------------------------- | ---------------------------------- |
+|            | MXNET FP32   | SPEED-UP MXNET-MKL FP32 V.S. MXNET | SPEED-UP MXNET-MKL INT8 V.S. MXNET | MXNET FP32   | SPEED-UP MXNET-MKL FP32 V.S. MXNET | SPEED-UP MXNET-MKL INT8 V.S. MXNET |
+| 1          | 1.00         | 19.50                              | 35.07                              | 1.00         | 13.15                              | 34.14                              |
+| 2          | 1.00         | 26.21                              | 55.70                              | 1.00         | 20.78                              | 61.53                              |
+| 4          | 1.00         | 36.11                              | 83.26                              | 1.00         | 30.00                              | 104.80                             |
+| 8          | 1.00         | 46.29                              | 108.58                             | 1.00         | 39.51                              | 160.60                             |
+| 16         | 1.00         | 49.47                              | 133.10                             | 1.00         | 42.71                              | 205.18                             |
+| 32         | 1.00         | 48.44                              | 143.82                             | 1.00         | 42.06                              | 217.07                             |
+| 64         | 1.00         | 47.89                              | 148.83                             | 1.00         | 42.19                              | 225.92                             |
+
+
+| BATCH SIZE | RESNET-101 |                                    |                                    | SQUEEZENET1.0 |                                    |                                    |
+| ---------- | ---------- | ---------------------------------- | ---------------------------------- | ------------- | ---------------------------------- | ---------------------------------- |
+|            | MXNET FP32 | SPEED-UP MXNET-MKL FP32 V.S. MXNET | SPEED-UP MXNET-MKL INT8 V.S. MXNET | MXNET FP32    | SPEED-UP MXNET-MKL FP32 V.S. MXNET | SPEED-UP MXNET-MKL INT8 V.S. MXNET |
+| 1          | 1.00       | 9.50                               | 22.91                              | 1.00          | 5.68                               | 18.16                              |
+| 2          | 1.00       | 12.42                              | 30.73                              | 1.00          | 9.01                               | 29.41                              |
+| 4          | 1.00       | 16.03                              | 42.36                              | 1.00          | 13.61                              | 44.14                              |
+| 8          | 1.00       | 18.31                              | 58.12                              | 1.00          | 17.22                              | 58.81                              |
+| 16         | 1.00       | 19.56                              | 71.00                              | 1.00          | 18.54                              | 67.53                              |
+| 32         | 1.00       | 20.22                              | 80.41                              | 1.00          | 17.32                              | 70.43                              |
+| 64         | 1.00       | 20.73                              | 82.89                              | 1.00          | 16.63                              | 69.44                              |
+
+
+| BATCH SIZE | INCEPTION V3 |                                    |                                    | RESNET-152 V2 |                                    |                                    |
+| ---------- | ------------ | ---------------------------------- | ---------------------------------- | ------------- | ---------------------------------- | ---------------------------------- |
+|            | MXNET FP32   | SPEED-UP MXNET-MKL FP32 V.S. MXNET | SPEED-UP MXNET-MKL INT8 V.S. MXNET | MXNET FP32    | SPEED-UP MXNET-MKL FP32 V.S. MXNET | SPEED-UP MXNET-MKL INT8 V.S. MXNET |
+| 1          | 1.00         | 11.25                              | 25.70                              | 1.00          | 7.88                               | 9.86                               |
+| 2          | 1.00         | 13.59                              | 41.41                              | 1.00          | 9.55                               | 12.02                              |
+| 4          | 1.00         | 19.26                              | 57.45                              | 1.00          | 11.94                              | 15.46                              |
+| 8          | 1.00         | 23.50                              | 76.14                              | 1.00          | 14.09                              | 18.01                              |
+| 16         | 1.00         | 25.30                              | 92.72                              | 1.00          | 15.66                              | 21.02                              |
+| 32         | 1.00         | 25.54                              | 103.10                             | 1.00          | 16.12                              | 21.43                              |
+| 64         | 1.00         | 25.40                              | 108.13                             | 1.00          | 16.57                              | 19.53                              |
+
+Table 3: Detailed Performance Data for RNN (Measured on C5.24xlarge, Synthetic Dataset)
+
+| SHAPE OF LSTM                         | LAYER=8   |               | LAYER=4   |               |
+| ------------------------------------- | --------- | ------------- | --------- | ------------- |
+| (N, T, C)                             | MXNET 1.5 | MXNET-MKL 1.5 | MXNET 1.5 | MXNET-MKL 1.5 |
+| LSTM LATENCY (MS) [1, 50, 512, 512]   | 1.00      | 7.82          | 1.00      | 10.49         |
+| LSTM LATENCY (MS) [1, 50, 1024, 1024] | 1.00      | 13.21         | 1.00      | 13.07         |
+| LSTM THROUGHPUT [32, 50, 512, 512]    | 1.00      | 15.57         | 1.00      | 14.99         |
+| LSTM THROUGHPUT [32, 50, 1024, 1024]  | 1.00      | 10.71         | 1.00      | 10.72         |
+
 
 AWS EC2 C5.18xlarge:
 
